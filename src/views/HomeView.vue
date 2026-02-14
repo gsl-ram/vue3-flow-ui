@@ -4,6 +4,6 @@ import TheWelcome from '../components/TheWelcome.vue'
 
 <template>
   <main>
-    <TheWelcome />
+    <router-link to="/vue-flow">Vue Flow</router-link>
   </main>
 </template>

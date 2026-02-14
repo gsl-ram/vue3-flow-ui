@@ -52,13 +52,13 @@
 <script setup lang="ts">
 import { ref, markRaw } from 'vue'
 import { VueFlow, useVueFlow, Position, MarkerType } from '@vue-flow/core'
-import type { Node, Edge } from '@vue-flow/core'
+import type { Node, Edge, NodeTypesObject, NodeMouseEvent, EdgeMouseEvent } from '@vue-flow/core'
 import '@vue-flow/core/dist/style.css'
 import '@vue-flow/core/dist/theme-default.css'
 import CustomNode from '@/components/flow/CustomNode.vue'
 
-const nodeTypes = {
-  custom: markRaw(CustomNode),
+const nodeTypes: NodeTypesObject = {
+  custom: markRaw(CustomNode) as any,
 }
 
 const defaultEdgeOptions = {
@@ -175,11 +175,11 @@ onNodeDragStop(({ node }) => {
   )
 })
 
-function handleNodeClick(_event: MouseEvent, node: Node) {
+function handleNodeClick({ node }: NodeMouseEvent) {
   logEvent(`Node clicked: "${node.label || node.id}"`)
 }
 
-function handleEdgeClick(_event: MouseEvent, edge: Edge) {
+function handleEdgeClick({ edge }: EdgeMouseEvent) {
   logEvent(`Edge clicked: ${edge.id}`)
 }
 
