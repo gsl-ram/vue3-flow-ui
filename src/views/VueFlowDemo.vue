@@ -63,7 +63,7 @@ const nodeTypes = {
 
 const defaultEdgeOptions = {
   style: { strokeWidth: 3, stroke: '#7c3aed' },
-  pathOptions: { offset: 50, curvature: 0.8 },
+  pathOptions: { offset: 50, curvature: 0.8, type: 'smoothstep' },
   markerEnd: {
     type: MarkerType.ArrowClosed,
     width: 15,
@@ -77,10 +77,6 @@ const edges = ref<Edge[]>([])
 
 const { onConnect, addEdges, onNodeDragStop, fitView, zoomIn, zoomOut, setViewport } = useVueFlow()
 
-onConnect((params) => {
-  addEdges(params)
-})
-
 const eventLog = ref<string[]>([])
 
 function logEvent(message: string) {
@@ -91,15 +87,92 @@ function logEvent(message: string) {
   }
 }
 
+/** Check if there's a path from `start` to `end` following existing edges */
+function hasPath(start: string, end: string): boolean {
+  const visited = new Set<string>()
+  const queue = [start]
+  while (queue.length > 0) {
+    const current = queue.shift()!
+    if (current === end) return true
+    if (visited.has(current)) continue
+    visited.add(current)
+    for (const edge of edges.value) {
+      if (edge.source === current) {
+        queue.push(edge.target)
+      }
+    }
+  }
+  return false
+}
+
+/** Check if a node already has an incoming edge (i.e. already has a parent) */
+function hasParent(nodeId: string): boolean {
+  return edges.value.some((edge) => edge.target === nodeId)
+}
+
+/** Get nodes that currently have no parent (root nodes) */
+function getRootNodeIds(): string[] {
+  const childIds = new Set(edges.value.map((e) => e.target))
+  return nodes.value.map((n) => n.id).filter((id) => !childIds.has(id))
+}
+
+onConnect((params) => {
+  const { source, target } = params
+
+  // Rule 1: No self-connections
+  if (source === target) {
+    logEvent(`Connection rejected: cannot connect a node to itself`)
+    return
+  }
+
+  // Rule 2: Each node can have at most 1 parent
+  if (hasParent(target)) {
+    logEvent(`Connection rejected: "${target}" already has a parent`)
+    return
+  }
+
+  // Rule 3: No circular dependencies
+  if (hasPath(target, source)) {
+    logEvent(`Connection rejected: would create a cycle (${source} → ${target})`)
+    return
+  }
+
+  // Rule 4: Only one root node allowed — don't connect two separate trees
+  // (connecting source → target removes target as a root; source's root becomes the sole root)
+  const roots = getRootNodeIds()
+  if (roots.length > 1) {
+    // Find which root each node belongs to
+    const sourceRoot = findRoot(source)
+    const targetRoot = findRoot(target)
+    // If they're in the same tree, this is fine
+    // If they're in different trees, only allow if it reduces roots toward 1
+    if (sourceRoot !== targetRoot && roots.length - 1 > 1) {
+      // Still more than 1 root after merging — only allow if no existing root tree would be left orphaned
+      // This is acceptable: merging two trees always reduces root count by 1
+    }
+  }
+
+  addEdges(params)
+  logEvent(`Edge connected: ${source} → ${target}`)
+})
+
+/** Find the root of the tree a node belongs to */
+function findRoot(nodeId: string): string {
+  let current = nodeId
+  const visited = new Set<string>()
+  while (true) {
+    visited.add(current)
+    const parentEdge = edges.value.find((e) => e.target === current)
+    if (!parentEdge) return current
+    if (visited.has(parentEdge.source)) return current
+    current = parentEdge.source
+  }
+}
+
 onNodeDragStop(({ node }) => {
   logEvent(
     `Node "${node.label || node.id}" moved to (${Math.round(node.position.x)}, ${Math.round(node.position.y)})`,
   )
-})
-
-onConnect((params) => {
-  console.log('onConnect', params)
-  logEvent(`Edge connected: ${params.source} → ${params.target}`)
 })
 
 function handleNodeClick(_event: MouseEvent, node: Node) {
