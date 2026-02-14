@@ -13,8 +13,12 @@
       <button class="btn btn-secondary" @click="handleZoomOut">Zoom Out (-)</button>
       <button class="btn btn-secondary" @click="handleResetView">Reset View</button>
       <div class="toolbar-divider" />
-      <button class="btn btn-accent" @click="addNewNode">+ Add Node</button>
       <button class="btn btn-danger" @click="resetFlow">Reset Flow</button>
+
+      <select v-model="selectedTaskType" class="form-select">
+        <option v-for="task in taskType" :key="task" :value="task">{{ task }}</option>
+      </select>
+      <button class="btn btn-accent" @click="addNewNode">+ Add Task</button>
     </div>
 
     <div class="flow-container">
@@ -50,12 +54,50 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, markRaw } from 'vue'
+import { ref, markRaw, nextTick } from 'vue'
 import { VueFlow, useVueFlow, Position, MarkerType } from '@vue-flow/core'
 import type { Node, Edge, NodeTypesObject, NodeMouseEvent, EdgeMouseEvent } from '@vue-flow/core'
 import '@vue-flow/core/dist/style.css'
 import '@vue-flow/core/dist/theme-default.css'
 import CustomNode from '@/components/flow/CustomNode.vue'
+
+const INITIAL_NODES = <Node[]>[
+  {
+    id: '0',
+    label: `New Node 0`,
+    type: 'custom',
+    position: {
+      x: 165,
+      y: 225,
+    },
+    data: {
+      title: `Task: Deployment`,
+    },
+  },
+  {
+    id: '1',
+    label: `New Node 1`,
+    type: 'custom',
+    position: {
+      x: 510,
+      y: 315,
+    },
+    data: {
+      title: `Task: Enrichment`,
+    },
+  },
+]
+
+const INITIAL_EDGES = <Edge[]>[
+  {
+    id: 'vueflow__edge-0-1',
+    type: 'default',
+    source: '0',
+    target: '1',
+  },
+]
+
+let nodeCounter = INITIAL_NODES.length
 
 const nodeTypes: NodeTypesObject = {
   custom: markRaw(CustomNode) as any,
@@ -72,8 +114,8 @@ const defaultEdgeOptions = {
   },
 }
 
-const nodes = ref<Node[]>([])
-const edges = ref<Edge[]>([])
+const nodes = ref<Node[]>(INITIAL_NODES)
+const edges = ref<Edge[]>(INITIAL_EDGES)
 
 const { onConnect, addEdges, onNodeDragStop, fitView, zoomIn, zoomOut, setViewport } = useVueFlow()
 
@@ -207,36 +249,38 @@ function handleResetView() {
   logEvent('View reset')
 }
 
-let nodeCounter = 7
+const taskType = [
+  'Enrichment',
+  'Cleaning',
+  'Transformation',
+  'Modeling',
+  'Validation',
+  'Deployment',
+]
+const selectedTaskType = ref(taskType[0])
 
 function addNewNode() {
   const id = String(nodeCounter++)
-  const taskType = [
-    'Enrichment',
-    'Cleaning',
-    'Transformation',
-    'Modeling',
-    'Validation',
-    'Deployment',
-  ]
-  const randomTaskType = taskType[Math.floor(Math.random() * taskType.length)]
   const newNode: Node = {
     id,
     label: `New Node ${id}`,
     type: 'custom',
     position: { x: Math.random() * 400 + 50, y: Math.random() * 300 + 50 },
     data: {
-      title: `Task: ${randomTaskType}`,
+      title: `Task: ${selectedTaskType.value}`,
     },
   }
   nodes.value = [...nodes.value, newNode]
   logEvent(`Added new node: "${newNode.label}"`)
+  nextTick(() => {
+    fitView({ padding: 0.2, duration: 300 })
+  })
 }
 
 function resetFlow() {
-  nodes.value = []
-  edges.value = []
-  nodeCounter = 7
+  nodes.value = INITIAL_NODES
+  edges.value = INITIAL_EDGES
+  nodeCounter = INITIAL_NODES.length
   logEvent('Flow reset to initial state')
 }
 </script>
