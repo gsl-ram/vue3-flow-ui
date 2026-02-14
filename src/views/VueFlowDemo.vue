@@ -63,6 +63,7 @@ const nodeTypes = {
 
 const defaultEdgeOptions = {
   style: { strokeWidth: 3, stroke: '#7c3aed' },
+  pathOptions: { offset: 50, curvature: 0.8 },
   markerEnd: {
     type: MarkerType.ArrowClosed,
     width: 15,
