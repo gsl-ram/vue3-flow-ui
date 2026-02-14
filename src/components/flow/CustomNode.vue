@@ -14,13 +14,13 @@ defineProps<Props>()
 
 <template>
   <div class="custom-node">
-    <Handle type="target" :position="Position.Top" />
+    <Handle type="target" :position="Position.Left" />
     <div class="custom-node-header">
       <span class="custom-node-emoji">{{ data.emoji }}</span>
       <span class="custom-node-title">{{ data.title }}</span>
     </div>
     <p class="custom-node-description">{{ data.description }}</p>
-    <Handle type="source" :position="Position.Bottom" />
+    <Handle type="source" :position="Position.Right" />
   </div>
 </template>
 
@@ -62,5 +62,19 @@ defineProps<Props>()
   color: #7c3aed;
   line-height: 1.4;
   margin: 0;
+}
+
+.custom-node :deep(.vue-flow__handle) {
+  width: 14px;
+  height: 14px;
+  background: #a855f7;
+  border: 2px solid #7c3aed;
+  border-radius: 50%;
+}
+
+.custom-node :deep(.vue-flow__handle:hover) {
+  background: #7c3aed;
+  /* transform: scale(1.3); */
+  transition: all 0.15s ease;
 }
 </style>

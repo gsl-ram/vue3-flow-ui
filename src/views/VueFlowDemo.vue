@@ -33,7 +33,7 @@
           @node-click="handleNodeClick"
           @edge-click="handleEdgeClick"
           @pane-click="handlePaneClick"
-          :defaultEdgeOptions="{ markerEnd: 'arrowclosed' }"
+          :defaultEdgeOptions="defaultEdgeOptions"
         >
           <template #node-default="{ data, label }">
             <div class="default-node-content">
@@ -59,6 +59,16 @@ import CustomNode from '@/components/flow/CustomNode.vue'
 
 const nodeTypes = {
   custom: markRaw(CustomNode),
+}
+
+const defaultEdgeOptions = {
+  style: { strokeWidth: 3, stroke: '#7c3aed' },
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+    width: 15,
+    height: 15,
+    color: '#7c3aed',
+  },
 }
 
 const nodes = ref<Node[]>([])
@@ -127,15 +137,23 @@ let nodeCounter = 7
 
 function addNewNode() {
   const id = String(nodeCounter++)
+  const taskType = [
+    'Enrichment',
+    'Cleaning',
+    'Transformation',
+    'Modeling',
+    'Validation',
+    'Deployment',
+  ]
+  const randomTaskType = taskType[Math.floor(Math.random() * taskType.length)]
   const newNode: Node = {
     id,
     label: `New Node ${id}`,
     type: 'custom',
     position: { x: Math.random() * 400 + 50, y: Math.random() * 300 + 50 },
     data: {
-      title: `New Node ${id}`,
+      title: `Task: ${randomTaskType}`,
     },
-    sourcePosition: Position.Left,
   }
   nodes.value = [...nodes.value, newNode]
   logEvent(`Added new node: "${newNode.label}"`)
@@ -156,5 +174,16 @@ function resetFlow() {
   border-radius: 12px;
   overflow: hidden;
   background: #fafbfc;
+}
+
+.vue-flow-instance :deep(.vue-flow__edge-path) {
+  stroke-width: 3;
+  transition:
+    stroke-width 0.2s ease,
+    stroke 0.2s ease;
+}
+
+.vue-flow-instance :deep(.vue-flow__edge:hover .vue-flow__edge-path) {
+  stroke: #6d28d9;
 }
 </style>
