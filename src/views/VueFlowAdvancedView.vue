@@ -71,37 +71,38 @@
                 <tr>
                   <th>ID</th>
                   <th>Label</th>
-                  <th>Position (x, y)</th>
                   <th>Title</th>
+                  <th>Parent</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="node in nodes" :key="node.id">
                   <td><code>{{ node.id }}</code></td>
                   <td>{{ node.label || node.id }}</td>
-                  <td>{{ Math.round(node.position.x) }}, {{ Math.round(node.position.y) }}</td>
                   <td>{{ node.data?.title ?? '—' }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-        <section class="list-section">
-          <h2 class="list-section-title">Edges</h2>
-          <div class="table-wrapper">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Source</th>
-                  <th>Target</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="edge in edges" :key="edge.id">
-                  <td><code>{{ edge.id }}</code></td>
-                  <td>{{ edge.source }}</td>
-                  <td>{{ edge.target }}</td>
+                  <td>
+                    <select
+                      :value="getCurrentParent(node.id)"
+                      @change="
+                        setParent(node.id, ($event.target as HTMLSelectElement).value)
+                      "
+                      class="form-select form-select-sm"
+                    >
+                      <option
+                        v-for="opt in getParentOptions(node.id)"
+                        :key="opt.value"
+                        :value="opt.value"
+                      >
+                        {{ opt.label }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <button class="btn btn-danger btn-sm" @click="deleteNode(node.id)">
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -218,6 +219,43 @@ function findRoot(nodeId: string): string {
     if (visited.has(parentEdge.source)) return current
     current = parentEdge.source
   }
+}
+
+function getParentOptions(nodeId: string): { value: string; label: string }[] {
+  const options = [{ value: '', label: 'None' }]
+  for (const n of nodes.value) {
+    if (n.id === nodeId) continue
+    if (hasPath(nodeId, n.id)) continue
+    options.push({ value: n.id, label: String(n.label ?? n.id) })
+  }
+  return options
+}
+
+function getCurrentParent(nodeId: string): string {
+  const edge = edges.value.find((e) => e.target === nodeId)
+  return edge?.source ?? ''
+}
+
+function setParent(nodeId: string, newParentId: string) {
+  edges.value = edges.value.filter((e) => e.target !== nodeId)
+  if (newParentId) {
+    edges.value = [
+      ...edges.value,
+      {
+        id: `vueflow__edge-${newParentId}-${nodeId}`,
+        source: newParentId,
+        target: nodeId,
+        type: 'default',
+      },
+    ]
+  }
+}
+
+function deleteNode(nodeId: string) {
+  nodes.value = nodes.value.filter((n) => n.id !== nodeId)
+  edges.value = edges.value.filter(
+    (e) => e.source !== nodeId && e.target !== nodeId,
+  )
 }
 
 onConnect((params) => {
@@ -380,7 +418,30 @@ function resetFlow() {
   border-radius: 6px;
   border: 1px solid var(--color-border);
   background: var(--color-background);
+  color: var(--color-text);
   font-size: 0.9rem;
+}
+
+.form-select-sm {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* Parent dropdowns in list view: force light theme for readability */
+.data-table .form-select {
+  background: #ffffff;
+  color: #1e293b;
+  border-color: #cbd5e1;
+}
+
+.data-table .form-select option {
+  background: #ffffff;
+  color: #1e293b;
+}
+
+.btn-sm {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
 }
 
 .flow-container {
