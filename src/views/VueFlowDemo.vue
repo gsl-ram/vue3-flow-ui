@@ -66,35 +66,28 @@ const INITIAL_NODES = <Node[]>[
     id: '0',
     label: `New Node 0`,
     type: 'custom',
-    position: {
-      x: 165,
-      y: 225,
-    },
-    data: {
-      title: `Task: Deployment`,
-    },
+    position: { x: 350, y: 50 },
+    data: { title: `Task: Deployment` },
   },
   {
     id: '1',
     label: `New Node 1`,
     type: 'custom',
-    position: {
-      x: 510,
-      y: 315,
-    },
-    data: {
-      title: `Task: Enrichment`,
-    },
+    position: { x: 150, y: 280 },
+    data: { title: `Task: Enrichment` },
+  },
+  {
+    id: '2',
+    label: `New Node 2`,
+    type: 'custom',
+    position: { x: 550, y: 280 },
+    data: { title: `Task: Validation` },
   },
 ]
 
 const INITIAL_EDGES = <Edge[]>[
-  {
-    id: 'vueflow__edge-0-1',
-    type: 'default',
-    source: '0',
-    target: '1',
-  },
+  { id: 'vueflow__edge-0-1', type: 'default', source: '0', target: '1' },
+  { id: 'vueflow__edge-0-2', type: 'default', source: '0', target: '2' },
 ]
 
 let nodeCounter = INITIAL_NODES.length

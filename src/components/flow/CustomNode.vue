@@ -14,13 +14,13 @@ defineProps<Props>()
 
 <template>
   <div class="custom-node">
-    <Handle type="target" :position="Position.Left" />
+    <Handle type="target" :position="Position.Top" />
     <div class="custom-node-header">
       <span class="custom-node-emoji">{{ data.emoji }}</span>
       <span class="custom-node-title">{{ data.title }}</span>
     </div>
     <p class="custom-node-description">{{ data.description }}</p>
-    <Handle type="source" :position="Position.Right" />
+    <Handle type="source" :position="Position.Bottom" />
   </div>
 </template>
 
