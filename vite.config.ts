@@ -9,7 +9,7 @@ export default defineConfig({
   base: '/vue3-flow-ui/',
   plugins: [vue(), vueDevTools()],
   build: {
-    outDir: 'docs',
+    outDir: 'dist',
   },
   resolve: {
     alias: {
