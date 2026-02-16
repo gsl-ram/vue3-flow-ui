@@ -23,6 +23,11 @@ const router = createRouter({
       component: () => import('../views/VueFlowDemo.vue'),
     },
     {
+      path: '/vue-flow-advanced',
+      name: 'vue-flow-advanced',
+      component: () => import('../views/VueFlowAdvancedView.vue'),
+    },
+    {
       path: '/syncfusion-diagram',
       name: 'syncfusion-diagram',
       component: () => import('../views/SyncfusionDiagramDemo.vue'),

@@ -6,6 +6,8 @@ import TheWelcome from '../components/TheWelcome.vue'
   <main>
     <router-link to="/vue-flow">Vue Flow</router-link>
     <span> | </span>
+    <router-link to="/vue-flow-advanced">Vue Flow Advanced</router-link>
+    <span> | </span>
     <router-link to="/syncfusion-diagram">Syncfusion Diagram</router-link>
   </main>
 </template>
