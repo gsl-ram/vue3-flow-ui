@@ -5,5 +5,7 @@ import TheWelcome from '../components/TheWelcome.vue'
 <template>
   <main>
     <router-link to="/vue-flow">Vue Flow</router-link>
+    <span> | </span>
+    <router-link to="/syncfusion-diagram">Syncfusion Diagram</router-link>
   </main>
 </template>

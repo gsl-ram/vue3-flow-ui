@@ -13,6 +13,7 @@
     "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
+    "@syncfusion/ej2-vue-diagrams": "^32.2.4",
     "@vue-flow/core": "^1.48.2",
     "pinia": "^3.0.4",
     "vue": "^3.5.27",
