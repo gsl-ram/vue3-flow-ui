@@ -19,6 +19,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ['monaco-editor'],
+    include: ['highlight.js', 'simple-code-editor'],
   },
   resolve: {
     alias: {

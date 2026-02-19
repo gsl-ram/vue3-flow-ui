@@ -38,6 +38,11 @@ const router = createRouter({
       component: () => import('../views/CodeEditorDemo.vue'),
     },
     {
+      path: '/simple-code-editor',
+      name: 'simple-code-editor',
+      component: () => import('../views/SimpleCodeEditorDemo.vue'),
+    },
+    {
       path: '/syncfusion-diagram',
       name: 'syncfusion-diagram',
       component: () => import('../views/SyncfusionDiagramDemo.vue'),
