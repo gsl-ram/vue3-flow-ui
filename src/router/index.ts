@@ -33,6 +33,11 @@ const router = createRouter({
       component: () => import('../views/JsonEditorDemo.vue'),
     },
     {
+      path: '/code-editor',
+      name: 'code-editor',
+      component: () => import('../views/CodeEditorDemo.vue'),
+    },
+    {
       path: '/syncfusion-diagram',
       name: 'syncfusion-diagram',
       component: () => import('../views/SyncfusionDiagramDemo.vue'),

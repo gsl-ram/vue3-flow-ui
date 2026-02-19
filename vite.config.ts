@@ -3,13 +3,22 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
-
 // https://vite.dev/config/
 export default defineConfig({
   base: '/vue3-flow-ui/',
   plugins: [vue(), vueDevTools()],
   build: {
     outDir: 'dist',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'monaco-editor': ['monaco-editor'],
+        },
+      },
+    },
+  },
+  optimizeDeps: {
+    exclude: ['monaco-editor'],
   },
   resolve: {
     alias: {

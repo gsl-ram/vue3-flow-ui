@@ -19,6 +19,8 @@
     "@vue-flow/core": "^1.48.2",
     "ejs": "^4.0.1",
     "json-editor-vue": "^0.18.1",
+    "monaco-editor": "^0.55.1",
+    "monaco-editor-vue3": "^1.0.5",
     "pinia": "^3.0.4",
     "vue": "^3.5.27",
     "vue-router": "^5.0.1"
