@@ -1,0 +1,1 @@
+import{_ as o,o as t,c as s,a}from"./index-DRLvRy0Y.js";import"./monaco-editor-CFAWLn37.js";const n={},r={class:"about"};function c(i,e){return t(),s("div",r,[...e[0]||(e[0]=[a("h1",null,"This is an about page",-1)])])}const u=o(n,[["render",c]]);export{u as default};
