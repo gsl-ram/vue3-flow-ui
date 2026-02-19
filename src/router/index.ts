@@ -28,6 +28,11 @@ const router = createRouter({
       component: () => import('../views/VueFlowAdvancedView.vue'),
     },
     {
+      path: '/json-editor',
+      name: 'json-editor',
+      component: () => import('../views/JsonEditorDemo.vue'),
+    },
+    {
       path: '/syncfusion-diagram',
       name: 'syncfusion-diagram',
       component: () => import('../views/SyncfusionDiagramDemo.vue'),
